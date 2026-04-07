@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PB2 Natural Frequency Analysis</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #7aa3cc;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-bg: #ecf0f1;
+            --border-color: #bdc3c7;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.3rem;
+            letter-spacing: 0.5px;
+        }
+
+        .navbar-brand i {
+            margin-right: 8px;
+            color: #fff;
+        }
+
+        /* Main Container */
+        .container-main {
+            max-width: 1400px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+
+        /* Tabs */
+        .nav-tabs {
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 30px;
+        }
+
+        .nav-link {
+            color: #666;
+            border: none;
+            border-bottom: 3px solid transparent;
+            padding: 12px 24px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--secondary-color);
+            border-bottom-color: var(--secondary-color);
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+
+        .nav-link.active {
+            color: var(--secondary-color);
+            border-bottom-color: var(--secondary-color);
+            background-color: transparent;
+        }
+
+        /* Cards */
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            margin-bottom: 24px;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border-radius: 12px 12px 0 0 !important;
+            padding: 16px 20px;
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 24px;
+        }
+
+        /* Canvas */
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            aspect-ratio: 1 / 1;
+            background-color: white;
+            border-radius: 8px;
+            border: 2px dashed var(--border-color);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .canvas-container:hover {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 8px rgba(52, 152, 219, 0.2);
+        }
+        
+        canvas {
+            cursor: crosshair;
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Input Groups */
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-control, .form-select {
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            padding: 10px 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+
+        /* Buttons */
+        .btn {
+            border-radius: 6px;
+            padding: 10px 20px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+        }
+
+        .btn-success:hover {
+            background-color: #229954;
+            transform: translateY(-2px);
+        }
+
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background-color: #e67e22;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.875rem;
+        }
+
+        /* Material Presets */
+        .material-preset {
+            padding: 12px;
+            border: 2px solid transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: #f8f9fa;
+            margin-bottom: 8px;
+        }
+
+        .material-preset:hover {
+            border-color: var(--secondary-color);
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+
+        .material-preset.selected {
+            border-color: var(--secondary-color);
+            background-color: rgba(52, 152, 219, 0.1);
+            font-weight: 600;
+        }
+
+        .material-name {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .material-values {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        /* Vertices Display */
+        .vertices-list {
+            max-height: 200px;
+            overflow-y: auto;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            padding: 12px;
+            margin-top: 12px;
+        }
+
+        .vertex-item {
+            padding: 6px 10px;
+            margin-bottom: 4px;
+            background-color: white;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .vertex-item:hover {
+            background-color: var(--light-bg);
+        }
+
+        /* Results Section */
+        .results-section {
+            display: none;
+        }
+
+        .results-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .frequency-table {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .frequency-row {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .frequency-row:hover {
+            background-color: var(--light-bg);
+        }
+
+        .mode-badge {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .frequency-value {
+            font-weight: 600;
+            color: var(--primary-color);
+            min-width: 150px;
+            text-align: right;
+        }
+
+        .frequency-hz {
+            color: #666;
+            font-size: 0.85rem;
+            min-width: 120px;
+            text-align: right;
+        }
+
+        /* Plot Images */
+        .plot-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .plot-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Status Messages */
+        .alert {
+            border-radius: 6px;
+            border: none;
+            margin-bottom: 16px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .alert-warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        /* Loading Spinner */
+        .spinner-container {
+            text-align: center;
+            padding: 40px;
+            display: none;
+        }
+
+        .spinner-container.active {
+            display: block;
+        }
+
+        .spinner-border {
+            color: var(--secondary-color);
+            border-width: 4px;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .progress-container.active {
+            display: block;
+        }
+
+        .progress {
+            height: 8px;
+            border-radius: 4px;
+            background-color: var(--light-bg);
+        }
+
+        .progress-bar {
+            background-color: var(--secondary-color);
+            animation: progress 1s ease-in-out infinite;
+        }
+
+        @keyframes progress {
+            0% { width: 0%; }
+            50% { width: 100%; }
+            100% { width: 100%; }
+        }
+
+        /* Info Box */
+        .info-box {
+            background-color: rgba(52, 152, 219, 0.05);
+            border-left: 4px solid var(--secondary-color);
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+        }
+
+        .info-box strong {
+            color: var(--primary-color);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            background-color: white;
+            border-radius: 8px;
+            padding: 24px;
+        }
+
+        /* File Upload */
+        .file-upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: #f8f9fa;
+        }
+
+        .file-upload-area:hover {
+            border-color: var(--secondary-color);
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+
+        .file-upload-area.dragover {
+            border-color: var(--secondary-color);
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container-main {
+                margin-top: 15px;
+                margin-bottom: 15px;
+            }
+
+            canvas {
+                height: 300px;
+            }
+
+            .card-body {
+                padding: 16px;
+            }
+
+            .btn {
+                width: 100%;
+                margin-bottom: 8px;
+            }
+
+            .navbar-brand {
+                font-size: 1.1rem;
+            }
+
+            .frequency-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .frequency-value, .frequency-hz {
+                text-align: left;
+                width: 100%;
+                margin-top: 4px;
+            }
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #1a1a1a;
+                color: #e0e0e0;
+            }
+
+            .card {
+                background-color: #2d2d2d;
+                color: #e0e0e0;
+            }
+
+            canvas, .vertices-list, .tab-content {
+                background-color: #2d2d2d;
+                color: #e0e0e0;
+                border-color: #444;
+            }
+
+            .form-control, .form-select {
+                background-color: #3d3d3d;
+                color: #e0e0e0;
+                border-color: #444;
+            }
+
+            .material-preset, .vertex-item {
+                background-color: #3d3d3d;
+                color: #e0e0e0;
+            }
+
+            .info-box {
+                background-color: rgba(52, 152, 219, 0.1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-wave-square"></i>
+                PB2 Analysis
+            </a>
+            <span class="navbar-text text-white ms-auto">
+                Natural Frequency Calculator
+            </span>
+        </div>
+    </nav>
+
+    <div class="container-main">
+        <!-- Title -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="display-5" style="color: var(--primary-color); font-weight: 700;">
+                    <i class="fas fa-chart-line"></i> PB2 Natural Frequency Analysis
+                </h1>
+                <p class="lead text-muted">Calculate natural frequencies for arbitrary plate geometries using the generalized Rayleigh-Ritz method.</p>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="draw-tab" data-bs-toggle="tab" href="#draw" role="tab">
+                    <i class="fas fa-pen-nib"></i> Draw Shape
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="polygon-tab" data-bs-toggle="tab" href="#polygon" role="tab">
+                    <i class="fas fa-polygon"></i> Regular Polygon
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="dxf-tab" data-bs-toggle="tab" href="#dxf" role="tab">
+                    <i class="fas fa-file"></i> Import DXF
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="results-tab" data-bs-toggle="tab" href="#results" role="tab">
+                    <i class="fas fa-chart-bar"></i> Results
+                </a>
+            </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content">
+            <!-- Draw Tab -->
+            <div class="tab-pane fade show active" id="draw" role="tabpanel">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-mouse"></i> Draw Your Shape
+                            </div>
+                            <div class="card-body">
+                                <div class="info-box">
+                                    <strong>Instructions:</strong> Click on the canvas to add vertices. Press Shift+Click to undo last vertex, or click "Clear" to start over.
+                                </div>
+                                <div class="canvas-container">
+                                    <canvas id="drawingCanvas" width="500" height="500"></canvas>
+                                </div>
+                                <div class="mt-3">
+                                    <button class="btn btn-primary me-2" onclick="useDrawnShape()">
+                                        <i class="fas fa-check"></i> Use This Shape
+                                    </button>
+                                    <button class="btn btn-warning" onclick="clearCanvas()">
+                                        <i class="fas fa-trash"></i> Clear
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-list"></i> Vertices
+                            </div>
+                            <div class="card-body">
+                                <div class="vertices-list" id="verticesList">
+                                    <div class="text-muted text-center py-3">No vertices yet</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Polygon Tab -->
+            <div class="tab-pane fade" id="polygon" role="tabpanel">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-shapes"></i> Regular Polygon Generator
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label class="form-label">Number of Sides</label>
+                                    <input type="number" id="nSides" class="form-control" value="6" min="3" max="100">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Side Length</label>
+                                    <input type="number" id="sideLength" class="form-control" value="1.0" step="0.1" min="0.1">
+                                </div>
+                                <button class="btn btn-primary w-100" onclick="generatePolygon()">
+                                    <i class="fas fa-magic"></i> Generate Polygon
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-star"></i> Common Shapes
+                            </div>
+                            <div class="card-body">
+                                <button class="btn btn-outline-primary me-2 mb-2" onclick="quickPolygon(3, 1.0)">Triangle</button>
+                                <button class="btn btn-outline-primary me-2 mb-2" onclick="quickPolygon(4, 1.0)">Square</button>
+                                <button class="btn btn-outline-primary me-2 mb-2" onclick="quickPolygon(5, 1.0)">Pentagon</button>
+                                <button class="btn btn-outline-primary mb-2" onclick="quickPolygon(6, 1.0)">Hexagon</button>
+                                <button class="btn btn-outline-primary me-2 mb-2" onclick="quickPolygon(8, 1.0)">Octagon</button>
+                                <button class="btn btn-outline-primary me-2 mb-2" onclick="quickPolygon(10, 1.0)">Decagon</button>
+                                <button class="btn btn-outline-primary me-2 mb-2" onclick="quickPolygon(12, 1.0)">Dodecagon</button>
+                                <button class="btn btn-outline-primary mb-2" onclick="quickPolygon(16, 1.0)">16-gon</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DXF Tab -->
+            <div class="tab-pane fade" id="dxf" role="tabpanel">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-file-import"></i> Import DXF File
+                            </div>
+                            <div class="card-body">
+                                <div class="info-box">
+                                    <strong>Supported:</strong> DXF files with closed POLYLINE or LWPOLYLINE entities. The shape will be automatically closed and normalized.
+                                </div>
+                                <div class="file-upload-area" id="fileUploadArea" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                                    <div>
+                                        <i class="fas fa-cloud-upload-alt" style="font-size: 48px; color: var(--secondary-color);"></i>
+                                        <h5 class="mt-3">Drag and drop your DXF file here</h5>
+                                        <p class="text-muted">or click to browse</p>
+                                        <input type="file" id="dxfFile" style="display: none;" accept=".dxf" onchange="handleFileSelect(event)">
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary w-100 mt-3" onclick="document.getElementById('dxfFile').click()">
+                                    <i class="fas fa-folder-open"></i> Browse Files
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Tab -->
+            <div class="tab-pane fade" id="results" role="tabpanel">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-cog"></i> Analysis Settings
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Flexural Rigidity (D)</label>
+                                            <input type="number" id="paramD" class="form-control" value="1.0" step="0.01" min="0.001">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Poisson's Ratio (ν)</label>
+                                            <input type="number" id="paramNu" class="form-control" value="0.3" step="0.01" min="0" max="0.49">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Density (ρ)</label>
+                                            <input type="number" id="paramRho" class="form-control" value="1.0" step="0.01" min="0.001">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Thickness</label>
+                                            <input type="number" id="paramThickness" class="form-control" value="1.0" step="0.01" min="0.001">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-industry"></i> Material Presets
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="material-preset" onclick="loadMaterial('steel')">
+                                            <div class="material-name">🏭 Steel</div>
+                                            <div class="material-values">D: 210 GPa | ν: 0.30 | ρ: 7850</div>
+                                        </div>
+                                        <div class="material-preset" onclick="loadMaterial('aluminum')">
+                                            <div class="material-name">✈️ Aluminum</div>
+                                            <div class="material-values">D: 70 GPa | ν: 0.33 | ρ: 2700</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="material-preset" onclick="loadMaterial('composite')">
+                                            <div class="material-name">🎨 Composite</div>
+                                            <div class="material-values">D: 30 GPa | ν: 0.25 | ρ: 1600</div>
+                                        </div>
+                                        <div class="material-preset" onclick="loadMaterial('gfrp')">
+                                            <div class="material-name">🪟 GFRP</div>
+                                            <div class="material-values">D: 10 GPa | ν: 0.28 | ρ: 1850</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-success btn-lg w-100 mt-4" onclick="runAnalysis()">
+                            <i class="fas fa-play"></i> Run Analysis
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Results Display -->
+                <div id="resultsDisplay" class="results-section mt-4">
+                    <div id="alertContainer"></div>
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="fas fa-chart-bar"></i> Natural Frequencies
+                                </div>
+                                <div class="card-body">
+                                    <div id="frequencyList" class="frequency-table"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="fas fa-info-circle"></i> Analysis Info
+                                </div>
+                                <div class="card-body">
+                                    <div id="analysisInfo"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="fas fa-image"></i> Shape Visualization
+                                </div>
+                                <div class="card-body">
+                                    <div id="shapePlot" class="plot-container"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="fas fa-chart-area"></i> Frequency Response
+                                </div>
+                                <div class="card-body">
+                                    <div id="frequencyPlot" class="plot-container"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Spinner -->
+    <div class="spinner-container" id="spinnerContainer">
+        <div class="spinner-border" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-3">Processing your shape...</p>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>
+            <i class="fas fa-wave-square"></i> PB2 Natural Frequency Analysis | 
+            Generalized Rayleigh-Ritz Method | 
+            <small>v1.0 © 2026</small>
+        </p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Global variables
+        let currentVertices = [];
+        let currentShapeDescription = '';
+        let analyzeAfterShape = false;
+
+        // Canvas setup
+        const canvas = document.getElementById('drawingCanvas');
+        const ctx = canvas.getContext('2d');
+        const vertices = [];
+        let isDrawing = false;
+
+        // Canvas event listeners
+        canvas.addEventListener('click', function(e) {
+            const rect = canvas.getBoundingClientRect();
+            
+            // Calculate scale ratio to account for CSS size vs actual resolution
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            
+            // Get click position relative to canvas, then scale to actual resolution
+            const x = (e.clientX - rect.left) * scaleX;
+            const y = (e.clientY - rect.top) * scaleY;
+
+            // Check for Shift+Click to undo
+            if (e.shiftKey && vertices.length > 0) {
+                vertices.pop();
+            } else {
+                vertices.push([x, y]);
+            }
+
+            redrawCanvas();
+            updateVerticesList();
+        });
+
+        canvas.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        function redrawCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw grid
+            ctx.strokeStyle = '#e0e0e0';
+            ctx.lineWidth = 1;
+            for (let i = 0; i < canvas.width; i += 50) {
+                ctx.beginPath();
+                ctx.moveTo(i, 0);
+                ctx.lineTo(i, canvas.height);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(0, i);
+                ctx.lineTo(canvas.width, i);
+                ctx.stroke();
+            }
+
+            // Draw vertices and lines
+            if (vertices.length > 0) {
+                ctx.strokeStyle = '#3498db';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(vertices[0][0], vertices[0][1]);
+
+                for (let i = 1; i < vertices.length; i++) {
+                    ctx.lineTo(vertices[i][0], vertices[i][1]);
+                }
+
+                // Close polygon if hovering near start
+                if (vertices.length > 2) {
+                    ctx.lineTo(vertices[0][0], vertices[0][1]);
+                }
+                ctx.stroke();
+
+                // Draw vertex points
+                ctx.fillStyle = '#3498db';
+                vertices.forEach((v, i) => {
+                    ctx.beginPath();
+                    ctx.arc(v[0], v[1], 5, 0, 2 * Math.PI);
+                    ctx.fill();
+
+                    // Draw vertex numbers
+                    ctx.fillStyle = 'white';
+                    ctx.font = 'bold 10px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(i + 1, v[0], v[1]);
+                    ctx.fillStyle = '#3498db';
+                });
+            }
+        }
+
+        function updateVerticesList() {
+            const list = document.getElementById('verticesList');
+            if (vertices.length === 0) {
+                list.innerHTML = '<div class="text-muted text-center py-3">No vertices yet</div>';
+                return;
+            }
+
+            list.innerHTML = vertices.map((v, i) => 
+                `<div class="vertex-item">
+                    <span><strong>#${i+1}</strong></span>
+                    <span style="font-family: monospace;">(${v[0].toFixed(1)}, ${v[1].toFixed(1)})</span>
+                    <button class="btn btn-sm btn-outline-danger" onclick="removeVertex(${i})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>`
+            ).join('');
+        }
+
+        function removeVertex(index) {
+            vertices.splice(index, 1);
+            redrawCanvas();
+            updateVerticesList();
+        }
+
+        function clearCanvas() {
+            vertices.length = 0;
+            redrawCanvas();
+            updateVerticesList();
+        }
+
+        function useDrawnShape() {
+            if (vertices.length < 3) {
+                showAlert('Need at least 3 vertices', 'danger');
+                return;
+            }
+
+            // Normalize vertices to [-1, 1] range
+            const xs = vertices.map(v => v[0]);
+            const ys = vertices.map(v => v[1]);
+            const minX = Math.min(...xs);
+            const maxX = Math.max(...xs);
+            const minY = Math.min(...ys);
+            const maxY = Math.max(...ys);
+
+            const rangeX = maxX - minX || 1;
+            const rangeY = maxY - minY || 1;
+            const scale = Math.max(rangeX, rangeY);
+
+            currentVertices = vertices.map(v => [
+                (v[0] - minX) / scale - 0.5,
+                (v[1] - minY) / scale - 0.5
+            ]);
+
+            currentShapeDescription = `Custom shape with ${vertices.length} vertices`;
+            showAlert(`Shape loaded: ${currentShapeDescription}`, 'success');
+
+            // Switch to results tab
+            document.getElementById('results-tab').click();
+        }
+
+        function generatePolygon() {
+            const nSides = parseInt(document.getElementById('nSides').value);
+            const sideLength = parseFloat(document.getElementById('sideLength').value);
+
+            fetch('/api/generate-polygon', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({sides: nSides, side_length: sideLength})
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    currentVertices = data.vertices;
+                    currentShapeDescription = data.description;
+                    showAlert(`Generated: ${currentShapeDescription}`, 'success');
+                    document.getElementById('results-tab').click();
+                } else {
+                    showAlert(data.error || 'Error generating polygon', 'danger');
+                }
+            })
+            .catch(e => showAlert(`Error: ${e.message}`, 'danger'));
+        }
+
+        function quickPolygon(sides, sideLength) {
+            document.getElementById('nSides').value = sides;
+            document.getElementById('sideLength').value = sideLength;
+            generatePolygon();
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            document.getElementById('fileUploadArea').classList.add('dragover');
+        }
+
+        function handleDragLeave(e) {
+            document.getElementById('fileUploadArea').classList.remove('dragover');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            document.getElementById('fileUploadArea').classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                uploadDXF(files[0]);
+            }
+        }
+
+        function handleFileSelect(e) {
+            if (e.target.files.length > 0) {
+                uploadDXF(e.target.files[0]);
+            }
+        }
+
+        function uploadDXF(file) {
+            showSpinner(true);
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            fetch('/api/load-dxf', {
+                method: 'POST',
+                body: formData
+            })
+            .then(r => r.json())
+            .then(data => {
+                showSpinner(false);
+                if (data.success) {
+                    currentVertices = data.vertices;
+                    currentShapeDescription = data.description;
+                    showAlert(`Loaded: ${currentShapeDescription}`, 'success');
+                    document.getElementById('results-tab').click();
+                } else {
+                    showAlert(data.error || 'Error loading DXF', 'danger');
+                }
+            })
+            .catch(e => {
+                showSpinner(false);
+                showAlert(`Error: ${e.message}`, 'danger');
+            });
+        }
+
+        function loadMaterial(material) {
+            const materials = {
+                steel: {D: 210e9, nu: 0.30, rho: 7850},
+                aluminum: {D: 70e9, nu: 0.33, rho: 2700},
+                composite: {D: 30e9, nu: 0.25, rho: 1600},
+                gfrp: {D: 10e9, nu: 0.28, rho: 1850}
+            };
+
+            if (materials[material]) {
+                const m = materials[material];
+                document.getElementById('paramD').value = m.D;
+                document.getElementById('paramNu').value = m.nu;
+                document.getElementById('paramRho').value = m.rho;
+
+                // Update UI to show selected material
+                document.querySelectorAll('.material-preset').forEach(el => {
+                    el.classList.remove('selected');
+                });
+                event.target.closest('.material-preset').classList.add('selected');
+
+                showAlert(`Loaded ${material.toUpperCase()} material properties`, 'info');
+            }
+        }
+
+        function runAnalysis() {
+            if (currentVertices.length === 0) {
+                showAlert('Please select or create a shape first', 'warning');
+                return;
+            }
+
+            showSpinner(true);
+
+            const data = {
+                vertices: currentVertices,
+                D: parseFloat(document.getElementById('paramD').value),
+                nu: parseFloat(document.getElementById('paramNu').value),
+                rho: parseFloat(document.getElementById('paramRho').value),
+                thickness: parseFloat(document.getElementById('paramThickness').value),
+                n_basis: 9
+            };
+
+            fetch('/api/analyze', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            })
+            .then(r => r.json())
+            .then(data => {
+                showSpinner(false);
+                if (data.success) {
+                    displayResults(data);
+                    showAlert('Analysis completed successfully!', 'success');
+                } else {
+                    showAlert(data.error || 'Analysis failed', 'danger');
+                }
+            })
+            .catch(e => {
+                showSpinner(false);
+                showAlert(`Error: ${e.message}`, 'danger');
+            });
+        }
+
+        function displayResults(data) {
+            // Show results section
+            document.getElementById('resultsDisplay').classList.add('active');
+
+            // Display frequencies
+            const freqList = document.getElementById('frequencyList');
+            freqList.innerHTML = data.frequencies.slice(0, 10).map((f, i) => {
+                const fHz = f / (2 * Math.PI);
+                return `
+                    <div class="frequency-row">
+                        <span class="mode-badge">Mode ${i+1}</span>
+                        <span class="frequency-value">${f.toFixed(6)} rad/s</span>
+                        <span class="frequency-hz">${fHz.toFixed(4)} Hz</span>
+                    </div>
+                `;
+            }).join('');
+
+            // Display analysis info
+            const info = `
+                <p><strong>Shape:</strong> ${currentShapeDescription}</p>
+                <p><strong>Vertices:</strong> ${data.n_vertices}</p>
+                <p><strong>Flexural Rigidity:</strong> ${document.getElementById('paramD').value}</p>
+                <p><strong>Poisson's Ratio:</strong> ${document.getElementById('paramNu').value}</p>
+                <p><strong>Density:</strong> ${document.getElementById('paramRho').value}</p>
+                <p><strong>Thickness:</strong> ${document.getElementById('paramThickness').value}</p>
+                <p><strong>Timestamp:</strong> ${new Date(data.timestamp).toLocaleString()}</p>
+            `;
+            document.getElementById('analysisInfo').innerHTML = info;
+
+            // Display plots
+            if (data.shape_plot) {
+                document.getElementById('shapePlot').innerHTML = 
+                    `<img src="${data.shape_plot}" class="plot-image" alt="Shape Plot">`;
+            }
+            if (data.freq_plot) {
+                document.getElementById('frequencyPlot').innerHTML = 
+                    `<img src="${data.freq_plot}" class="plot-image" alt="Frequency Plot">`;
+            }
+        }
+
+        function showAlert(message, type = 'info') {
+            const container = document.getElementById('alertContainer');
+            const alertId = 'alert-' + Date.now();
+            const alert = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert" id="${alertId}">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', alert);
+            setTimeout(() => {
+                const elem = document.getElementById(alertId);
+                if (elem) elem.remove();
+            }, 5000);
+        }
+
+        function showSpinner(show) {
+            document.getElementById('spinnerContainer').classList.toggle('active', show);
+        }
+
+        // Initialize
+        redrawCanvas();
+    </script>
+</body>
+</html>
