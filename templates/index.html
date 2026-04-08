@@ -741,6 +741,15 @@
                                             <input type="number" id="paramThickness" class="form-control" value="1.0" step="0.01" min="0.001">
                                         </div>
                                     </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="form-label">Edge Boundary Condition</label>
+                                            <select id="paramBC" class="form-select">
+                                                <option value="simply_supported" selected>Simply Supported &mdash; w = 0 on all edges</option>
+                                                <option value="fixed">Fixed (Clamped) &mdash; w = 0 and &part;w/&part;n = 0 on all edges</option>
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1127,7 +1136,8 @@
                 nu: parseFloat(document.getElementById('paramNu').value),
                 rho: parseFloat(document.getElementById('paramRho').value),
                 thickness: parseFloat(document.getElementById('paramThickness').value),
-                n_basis: 9
+                n_basis: 9,
+                boundary_condition: document.getElementById('paramBC').value
             };
 
             fetch('/api/analyze', {
@@ -1176,6 +1186,7 @@
                 <p><strong>Poisson's Ratio:</strong> ${document.getElementById('paramNu').value}</p>
                 <p><strong>Density:</strong> ${document.getElementById('paramRho').value}</p>
                 <p><strong>Thickness:</strong> ${document.getElementById('paramThickness').value}</p>
+                <p><strong>Boundary Condition:</strong> ${document.getElementById('paramBC').value === 'fixed' ? 'Fixed (Clamped)' : 'Simply Supported'}</p>
                 <p><strong>Timestamp:</strong> ${new Date(data.timestamp).toLocaleString()}</p>
             `;
             document.getElementById('analysisInfo').innerHTML = info;
