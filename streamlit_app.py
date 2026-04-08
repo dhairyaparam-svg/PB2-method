@@ -357,3 +357,18 @@ Built with: Passion | Creativity | Love |
 
 [🚁 Quadrotor Flight Guidance Simulator](https://dronenavigatorsmc.streamlit.app/) | [📋 Documentation](https://www.sciencedirect.com/science/article/abs/pii/014102969390017X) | [🐛 Report Issues](dhairya.param@iitgn.ac.in)
 """)
+
+# ============================================================================
+# Footer
+# ============================================================================
+
+st.divider()
+st.markdown("""
+---
+**PB2 Rayleigh–Ritz Method**
+*Based on lectures on Approximate methods of Structural Analysis by Dr. K. bhaskar (2023)*
+
+Built with: Passion | Creativity | Love | 
+
+[🚁 Quadrotor Flight Guidance Simulator](https://dronenavigatorsmc.streamlit.app/) | [📋 Documentation](https://www.sciencedirect.com/science/article/abs/pii/014102969390017X) | [🐛 Report Issues](dhairya.param@iitgn.ac.in)
+""")
