@@ -54,7 +54,7 @@ with st.sidebar:
     <div style="text-align: center; margin-top: 0rem;">
         <p style="font-size: 0.85rem; color: #888;">
             <br>
-            <b style="color: #555;">This tool determines the natrual frequencies for a plate of any arbitery shape for all possible modes</b><br>
+            <b style="color: #555;">This tool determines the natrual frequencies for a plate of any arbitery shape for all the modes</b><br>
             For Custom set of parameters kindly refer to the Repository.
         </p>
     </div>
@@ -327,3 +327,18 @@ if vertices is not None and len(vertices) >= 3:
                     st.code(traceback.format_exc())
 else:
     st.info("👆 Use one of the tabs above to define a shape, then run the analysis.")
+
+# ============================================================================
+# Footer
+# ============================================================================
+
+st.divider()
+st.markdown("""
+---
+**PB2 Reileigh Ritz Method**
+*Based on courese by K. bhaskar, Gaurav S. and D. Dosi (2023)*
+
+Built with: Passion | Creativity | Love | 
+
+[🚀 SMC-IO Asteroid Landing Guidance](https://slidingmodeguidence.streamlit.app/) | [📋 Documentation](https://www.sciencedirect.com/science/article/abs/pii/014102969390017X) | [🐛 Report Issues](dhairya.param@iitgn.ac.in)
+""")
