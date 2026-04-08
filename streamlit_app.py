@@ -340,5 +340,5 @@ st.markdown("""
 
 Built with: Passion | Creativity | Love | 
 
-[🚀 SMC-IO Asteroid Landing Guidance](https://slidingmodeguidence.streamlit.app/) | [📋 Documentation](https://www.sciencedirect.com/science/article/abs/pii/014102969390017X) | [🐛 Report Issues](dhairya.param@iitgn.ac.in)
+[🚁 Quadrotor Flight Guidance Simulator](https://dronenavigatorsmc.streamlit.app/) | [📋 Documentation](https://www.sciencedirect.com/science/article/abs/pii/014102969390017X) | [🐛 Report Issues](dhairya.param@iitgn.ac.in)
 """)
