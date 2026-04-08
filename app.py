@@ -83,6 +83,7 @@ def analyze():
             rho=rho,
             thickness=thickness,
             n_basis=n_basis,
+            boundary_condition=boundary_condition,
             verbose=False
         )
         
