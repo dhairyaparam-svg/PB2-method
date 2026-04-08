@@ -117,8 +117,8 @@ class PB2NaturalFrequency:
     Generalized Rayleigh-Ritz method for arbitrary polygonal plates
     """
     
-    def __init__(self, vertices, D=1.0, nu=0.3, rho=1.0, thickness=1.0, 
-                 n_basis=9, verbose=True):
+    def __init__(self, vertices, D=1.0, nu=0.3, rho=1.0, thickness=1.0,
+                 n_basis=9, boundary_condition='simply_supported', verbose=True):
         """
         Initialize PB2 analyzer
         
@@ -136,6 +136,9 @@ class PB2NaturalFrequency:
             Plate thickness
         n_basis : int
             Number of basis functions (9 is default)
+        boundary_condition : str
+            'simply_supported' — w=0 on all edges (essential BC only)
+            'fixed'            — w=0 AND dw/dn=0 on all edges
         verbose : bool
             Print intermediate results
         """
@@ -145,6 +148,9 @@ class PB2NaturalFrequency:
         self.rho = rho
         self.thickness = thickness
         self.n_basis = n_basis
+        if boundary_condition not in ('simply_supported', 'fixed'):
+            raise ValueError("boundary_condition must be 'simply_supported' or 'fixed'")
+        self.boundary_condition = boundary_condition
         self.verbose = verbose
         
         # Normalize vertices to centered coordinates
@@ -174,7 +180,10 @@ class PB2NaturalFrequency:
             
             # Line equation: (y-y1)*(x2-x1) - (x-x1)*(y2-y1) = 0
             edge_eq = (y - y1) * (x2 - x1) - (x - x1) * (y2 - y1)
-            constraint *= edge_eq**2
+            # power=1 → w=0 on edge (simply supported)
+            # power=2 → w=0 AND dw/dn=0 on edge (fixed/clamped)
+            power = 2 if self.boundary_condition == 'fixed' else 1
+            constraint *= edge_eq**power
         
         return constraint, x, y
     

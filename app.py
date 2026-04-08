@@ -64,6 +64,9 @@ def analyze():
         rho = float(data.get('rho', 1.0))
         thickness = float(data.get('thickness', 1.0))
         n_basis = int(data.get('n_basis', 9))
+        boundary_condition = data.get('boundary_condition', 'simply_supported')
+        if boundary_condition not in ('simply_supported', 'fixed'):
+            return jsonify({'error': "boundary_condition must be 'simply_supported' or 'fixed'"}), 400
         
         # Validate material properties
         if D <= 0 or rho <= 0 or thickness <= 0:

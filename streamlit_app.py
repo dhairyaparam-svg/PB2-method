@@ -49,7 +49,39 @@ with st.sidebar:
     n_basis   = st.slider("Basis Functions (n_basis)", min_value=4, max_value=20, value=9)
 
     st.markdown("---")
+    st.header("🔩 Boundary Condition")
+    bc_label = st.radio(
+        "Edge Support Type",
+        options=["Simply Supported", "Fixed (Clamped)"],
+        index=0,
+        help=(
+            "**Simply Supported** — zero displacement on all edges (w = 0).\n\n"
+            "**Fixed (Clamped)** — zero displacement AND zero slope on all edges "
+            "(w = 0 and ∂w/∂n = 0)."
+        ),
+    )
+    boundary_condition = "simply_supported" if bc_label == "Simply Supported" else "fixed"
+
+    st.markdown("---")
     st.caption("Values must be positive. ν must be < 0.5.")
+    st.caption("""
+    <div style="text-align: center; margin-top: 0rem;">
+        <p style="font-size: 0.85rem; color: #888;">
+            <br>
+            <b style="color: #555;">This tool determines the natrual frequencies for a plate of any arbitery shape for all the possible modes of vibration</b><br>
+            For Custom set of parameters kindly refer to the Repository.
+        </p>
+    </div>
+    <div style="text-align: center; margin-top: 0rem;">
+        <img src="https://iitgn.ac.in/assets/img/logo.png" width="100" style="margin-bottom: 10px;">
+        <p style="font-size: 0.85rem; color: #888;">
+            Developed in<br>
+            <b style="color: #555;">Center of Research Commercialization</b><br>
+            Indian Institute of Technology Gandhinagar
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
 
 # ──────────────────────────────────────────────────────────
 # Helper: shape + frequency plots
@@ -272,6 +304,7 @@ if vertices is not None and len(vertices) >= 3:
                     rho=float(rho),
                     thickness=float(thickness),
                     n_basis=int(n_basis),
+                    boundary_condition=boundary_condition,
                     verbose=False,
                 )
                 freqs = analyzer.calculate_natural_frequencies()
@@ -309,3 +342,18 @@ if vertices is not None and len(vertices) >= 3:
                     st.code(traceback.format_exc())
 else:
     st.info("👆 Use one of the tabs above to define a shape, then run the analysis.")
+
+# ============================================================================
+# Footer
+# ============================================================================
+
+st.divider()
+st.markdown("""
+---
+**PB2 Rayleigh–Ritz Method**
+*Based on lectures on Approximate methods of Structural Analysis by Dr. K. bhaskar (2023)*
+
+Built with: Passion | Creativity | Love | 
+
+[🚁 Quadrotor Flight Guidance Simulator](https://dronenavigatorsmc.streamlit.app/) | [📋 Documentation](https://www.sciencedirect.com/science/article/abs/pii/014102969390017X) | [🐛 Report Issues](dhairya.param@iitgn.ac.in)
+""")
