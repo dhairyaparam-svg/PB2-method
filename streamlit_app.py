@@ -51,7 +51,7 @@ with st.sidebar:
     st.markdown("---")
     st.caption("Values must be positive. ν must be < 0.5.")
     st.caption("""
-    <div style="text-align: center; margin-top: 1rem;">
+    <div style="text-align: center; margin-top: 0rem;">
         <p style="font-size: 0.85rem; color: #888;">
             <br>
             <b style="color: #555;">This tool determines the natrual frequencies for a plate of any arbitery shape for all possible modes</b><br>
