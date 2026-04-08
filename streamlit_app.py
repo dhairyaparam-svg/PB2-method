@@ -54,11 +54,11 @@ with st.sidebar:
     <div style="text-align: center; margin-top: 0rem;">
         <p style="font-size: 0.85rem; color: #888;">
             <br>
-            <b style="color: #555;">This tool determines the natrual frequencies for a plate of any arbitery shape for all the modes</b><br>
+            <b style="color: #555;">This tool determines the natrual frequencies for a plate of any arbitery shape for all the possible modes of vibration</b><br>
             For Custom set of parameters kindly refer to the Repository.
         </p>
     </div>
-    <div style="text-align: center; margin-top: 1rem;">
+    <div style="text-align: center; margin-top: 0rem;">
         <img src="https://iitgn.ac.in/assets/img/logo.png" width="100" style="margin-bottom: 10px;">
         <p style="font-size: 0.85rem; color: #888;">
             Developed in<br>
