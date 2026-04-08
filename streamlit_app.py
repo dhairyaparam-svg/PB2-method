@@ -51,7 +51,7 @@ with st.sidebar:
     st.markdown("---")
     st.caption("Values must be positive. ν must be < 0.5.")
 
-    st.sidebar.markdown("""
+    st.caption("""
     <div style="text-align: center; margin-top: 3rem;">
         <p style="font-size: 0.85rem; color: #888;">
             <br>
@@ -68,7 +68,7 @@ with st.sidebar:
             Indian Institute of Technology Gandhinagar
         </p>
     </div>
-""", unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
 
 # ──────────────────────────────────────────────────────────
