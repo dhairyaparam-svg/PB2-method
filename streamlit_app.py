@@ -335,8 +335,8 @@ else:
 st.divider()
 st.markdown("""
 ---
-**PB2 Reileigh Ritz Method**
-*Based on courese by K. bhaskar, Gaurav S. and D. Dosi (2023)*
+**PB2 Rayleigh–Ritz Method**
+*Based on lectures on Approximate methods of Structural Analysis by Dr. K. bhaskar (2023)*
 
 Built with: Passion | Creativity | Love | 
 
